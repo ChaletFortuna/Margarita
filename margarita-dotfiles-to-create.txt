@@ -1,0 +1,35 @@
+=== .gitignore (create with Add file → Create new file, name: .gitignore) ===
+__pycache__/
+guide-src/
+
+=== .github/workflows/sync-calendar.yml (create with Add file → Create new file, name: .github/workflows/sync-calendar.yml) ===
+name: Sync reservation calendar
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: [availability.json]
+  schedule:
+    - cron: "0 5 * * *"   # every day at 05:00 UTC
+  workflow_dispatch:        # allows manual run from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch iCal feeds and update availability.json
+        run: python scripts/sync_ical.py
+      - name: Commit changes
+        run: |
+          git config user.name "calendar-bot"
+          git config user.email "actions@github.com"
+          git add availability.json
+          git diff --cached --quiet || git commit -m "Update availability calendar"
+          git push
