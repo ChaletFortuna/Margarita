@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Guest area — Villa Margarita, Beaulieu-sur-Mer</title>
+<meta name="description" content="Welcome guide for guests of Villa Margarita, Beaulieu-sur-Mer. Log in with your e-mail and reservation number.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,500;0,6..96,600;0,6..96,700;1,6..96,500&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pine:#0f3a57; --wood:#1b5c86; --wood-dark:#0f3a57; --cream:#ffffff; --cream-2:#e9f1f6;
+  --ink:#1f2a33; --muted:#5f6d78; --gold:#c8923a; --white:#fff; --red:#a8402f;
+  --radius:14px; --shadow:0 10px 40px rgba(43,38,32,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:'Work Sans',sans-serif;color:var(--ink);background:var(--cream);line-height:1.65}
+h1,h2,h3,h4,.serif{font-family:'Bodoni Moda',serif;color:var(--pine)}
+img{max-width:100%;display:block}
+a{color:var(--wood)}
+.container{max-width:1120px;margin:0 auto;padding:0 24px}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:50;background:rgba(250,246,240,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(27,92,134,.15)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;gap:14px}
+.brand{font-family:'Bodoni Moda',serif;font-size:1.35rem;font-weight:700;color:var(--pine);text-decoration:none;white-space:nowrap}
+.brand span{color:var(--gold)}
+.nav-right{display:flex;gap:14px;align-items:center;font-size:.88rem}
+.nav-right a{text-decoration:none;color:var(--ink);font-weight:500}
+.nav-right a:hover{color:var(--gold)}
+.nav-right a{white-space:nowrap}
+.nav-short{display:none}
+.btn{display:inline-block;padding:12px 26px;border-radius:4px;text-decoration:none;font-weight:600;font-size:.92rem;border:0;cursor:pointer;transition:.2s;font-family:'Work Sans',sans-serif}
+.btn-gold{background:var(--gold);color:#fff}
+.btn-gold:hover{background:#a97826}
+.btn-sm{padding:8px 16px;font-size:.8rem}
+.btn-ghost{border:1.5px solid rgba(27,92,134,.35);color:var(--pine);background:none}
+.btn-ghost:hover{background:var(--cream-2)}
+
+/* LOGIN */
+.login{min-height:calc(100vh - 64px);display:grid;grid-template-columns:1.1fr .9fr}
+.login-visual{background:url('images/hero.jpg') center/cover no-repeat;position:relative;min-height:320px}
+.login-visual::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,25,20,.1),rgba(20,25,20,.6))}
+.login-visual div{position:absolute;left:40px;bottom:40px;right:40px;color:#fff;z-index:2}
+.login-visual h1{color:#fff;font-size:clamp(2rem,4vw,3.2rem);line-height:1.1;font-weight:700}
+.login-visual p{color:#f0ead9;margin-top:10px;max-width:460px}
+.login-form{display:flex;align-items:center;justify-content:center;padding:48px 24px}
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:40px;width:100%;max-width:440px;border:1px solid rgba(27,92,134,.1)}
+.section-label{letter-spacing:.22em;text-transform:uppercase;font-size:.72rem;font-weight:600;color:var(--gold);margin-bottom:8px}
+.card h2{font-size:2rem;margin-bottom:6px}
+.card p.lead{font-size:.9rem;color:var(--muted);margin-bottom:24px}
+label.f{display:block;font-size:.8rem;font-weight:600;margin-bottom:14px;color:var(--pine)}
+label.f input{display:block;width:100%;margin-top:6px;padding:12px 14px;border:1px solid rgba(27,92,134,.3);border-radius:10px;font:400 .95rem 'Work Sans',sans-serif;background:var(--cream);color:var(--ink)}
+label.f input:focus{outline:2px solid var(--gold);border-color:transparent}
+.card .btn{width:100%;margin-top:6px}
+.err{display:none;margin-top:14px;padding:10px 14px;border-radius:10px;background:#f8e6e2;color:var(--red);font-size:.85rem}
+.err.show{display:block}
+.hint{margin-top:18px;font-size:.8rem;color:var(--muted)}
+.hint a{color:var(--wood)}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px;margin-right:8px}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* GUIDE LAYOUT */
+.guide{display:none}
+.guide.open{display:block}
+.guide-wrap{display:grid;grid-template-columns:250px 1fr;gap:48px;padding:40px 0 80px;align-items:start}
+.toc{position:sticky;top:84px;background:#fff;border:1px solid rgba(27,92,134,.12);border-radius:var(--radius);padding:18px;box-shadow:0 4px 18px rgba(43,38,32,.06)}
+.toc .who{font-size:.78rem;color:var(--muted);padding:0 8px 12px;border-bottom:1px solid rgba(27,92,134,.12);margin-bottom:8px}
+.toc .who b{display:block;color:var(--pine);font-size:.95rem;font-family:'Bodoni Moda';font-weight:700}
+.toc a{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--ink);font-size:.86rem;font-weight:500}
+.toc a:hover{background:var(--cream-2)}
+.toc a.active{background:var(--pine);color:#fff}
+.toc .ico{width:20px;text-align:center;font-size:1rem}
+.toc .out{margin-top:10px;padding-top:10px;border-top:1px solid rgba(27,92,134,.12)}
+.toc .out button{width:100%}
+
+/* CONTENT */
+.content section{background:#fff;border:1px solid rgba(27,92,134,.1);border-radius:var(--radius);padding:36px 40px;margin-bottom:28px;scroll-margin-top:84px}
+.content h2{font-size:2.2rem;font-weight:600;margin-bottom:16px;line-height:1.15}
+.content h3{font-size:1.45rem;font-weight:600;margin:30px 0 10px;padding-top:18px;border-top:1px solid rgba(27,92,134,.12)}
+.content h2+h3{border-top:0;padding-top:0;margin-top:14px}
+.content h4{font-size:1.15rem;font-weight:700;margin:20px 0 8px;color:var(--wood)}
+.content p,.content li{font-size:.94rem;color:#3f382f}
+.content p{margin-bottom:12px}
+.content ul,.content ol{margin:0 0 14px 22px}
+.content li{margin-bottom:6px}
+.content b{color:var(--ink)}
+.content figure{margin:14px 0 18px}
+.content figure img{border-radius:10px;box-shadow:0 4px 18px rgba(43,38,32,.1);width:100%;object-fit:cover}
+.content figcaption{font-size:.8rem;color:var(--muted);margin-top:6px;font-style:italic}
+.content .g-small{font-size:.8rem;color:var(--muted)}
+.g-links{list-style:none;margin-left:0!important}
+.g-links li::before{content:"→ ";color:var(--gold)}
+.g-btn{display:inline-block;padding:11px 22px;border-radius:4px;background:var(--gold);color:#fff!important;text-decoration:none;font-weight:600;font-size:.88rem;border:0;cursor:pointer;font-family:'Work Sans',sans-serif}
+.g-btn:hover{background:#a97826}
+.g-hero{position:relative;border-radius:12px;overflow:hidden;margin-bottom:22px}
+.g-hero img{width:100%;max-height:420px;object-fit:cover}
+.g-hero-text{position:absolute;left:0;right:0;bottom:0;padding:40px 32px 28px;background:linear-gradient(180deg,transparent,rgba(20,25,20,.5) 35%,rgba(20,25,20,.85));color:#fff;text-shadow:0 1px 12px rgba(20,25,20,.6)}
+.g-hero-text h2,.g-hero-text .g-lead{color:#fff;margin:0}
+.g-kicker{letter-spacing:.2em;text-transform:uppercase;font-size:.72rem;font-weight:600;color:var(--gold)}
+.g-lead{font-size:1.05rem;color:#f0ead9}
+.g-quick{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:20px}
+.g-quick-card{display:block;text-decoration:none;background:var(--cream-2);border-radius:10px;padding:14px 16px;color:var(--ink)}
+.g-quick-card b{display:block;font-family:'Bodoni Moda';font-size:1.2rem;color:var(--pine)}
+.g-quick-card span{font-size:.78rem;color:var(--muted)}
+.g-quick-card:hover{background:#eadfce}
+.g-callout{background:var(--cream-2);border-left:4px solid var(--gold);border-radius:8px;padding:14px 18px;margin:14px 0 18px;font-size:.92rem}
+.g-warn{background:#fbeeea;border-left-color:var(--red)}
+.g-contact{background:#f8f1e3;border-left-color:var(--pine)}
+.g-wifi{display:flex;gap:32px;flex-wrap:wrap;background:var(--pine);border-left:0;color:#fff;padding:18px 22px}
+.g-wifi span{display:block;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:#cfd6cd}
+.g-wifi b{font-size:1.4rem;font-family:'Bodoni Moda';color:#fff;letter-spacing:.02em}
+.g-wifi small{color:#cfd6cd;font-size:.75rem}
+.g-numbers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 22px}
+.g-numbers a{text-decoration:none;background:var(--red);color:#fff;border-radius:12px;padding:16px;text-align:center}
+.g-numbers b{display:block;font-size:2rem;font-family:'Bodoni Moda';line-height:1}
+.g-numbers span{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+.g-table{width:100%;border-collapse:collapse;font-size:.9rem;margin:10px 0 18px}
+.g-table th{text-align:left;vertical-align:top;padding:10px 14px 10px 0;width:170px;color:var(--pine);font-family:'Bodoni Moda';font-size:1.1rem;font-weight:700}
+.g-table td{padding:10px 0;vertical-align:top;color:#3f382f}
+.g-table tr{border-bottom:1px solid rgba(27,92,134,.1)}
+.g-data{width:100%;border-collapse:collapse;font-size:.88rem;margin:10px 0 20px}
+.g-data th,.g-data td{text-align:left;vertical-align:top;padding:8px 10px;border-bottom:1px solid rgba(27,92,134,.12)}
+.g-data th{color:var(--pine);font-weight:600;background:var(--cream-2)}
+.g-step{margin:14px 0 22px;padding:16px 18px;background:var(--cream-2);border-radius:10px}
+.g-step .g-imgrow{margin:12px 0 0}
+.g-step figure{margin:0}
+.g-step figure img,.g-imgrow figure img{max-height:300px;object-fit:contain;background:#fff;box-shadow:none;border:1px solid rgba(27,92,134,.12)}
+.g-wifi>div{min-width:140px}
+.g-cols{display:grid;grid-template-columns:260px 1fr;gap:22px;align-items:start;margin:12px 0}
+.g-cols figure{margin:0}
+.g-imgrow{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:12px 0 18px}
+.g-imgrow-2{grid-template-columns:repeat(2,1fr)}
+.g-imgrow-4{grid-template-columns:repeat(4,1fr)}
+.g-imgrow figure{margin:0}
+.g-imgrow img{aspect-ratio:4/3;object-fit:cover}
+.g-imgrow-4 img{aspect-ratio:3/4}
+.g-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0 18px}
+.g-card{background:var(--cream-2);border-radius:10px;padding:16px 18px}
+.g-card b{display:block;font-family:'Bodoni Moda';font-size:1.25rem;color:var(--pine);margin-bottom:6px}
+.g-card p{margin:0;font-size:.88rem}
+.g-top li{margin-bottom:10px;padding-left:4px}
+.g-top li::marker{color:var(--gold);font-weight:700;font-family:'Bodoni Moda';font-size:1.1rem}
+.g-shops{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:12px 0 18px}
+.g-shops figure{margin:0}
+.g-shops img{aspect-ratio:16/9;object-fit:cover}
+.g-shops figcaption{font-style:normal;color:#3f382f;font-size:.85rem}
+.g-share label{display:block;font-weight:600;font-size:.85rem;color:var(--pine);margin-bottom:14px}
+.g-share textarea{display:block;width:100%;margin-top:6px;padding:10px 12px;border:1px solid rgba(27,92,134,.3);border-radius:10px;font:400 .92rem 'Work Sans',sans-serif;background:var(--cream);resize:vertical}
+.g-share textarea:focus{outline:2px solid var(--gold);border-color:transparent}
+.g-share .g-small{margin-top:10px}
+.lightbox{position:fixed;inset:0;background:rgba(20,18,15,.93);z-index:100;display:none;align-items:center;justify-content:center;cursor:zoom-out}
+.lightbox.open{display:flex}
+.lightbox img{max-width:94vw;max-height:90vh;border-radius:8px}
+
+footer{background:var(--wood-dark);color:#e8ddd0;padding:28px 0;font-size:.85rem;text-align:center}
+footer a{color:#f0e6d8}
+
+@media(max-width:900px){
+  .login{grid-template-columns:1fr}
+  .login-visual{min-height:260px}
+  .login-visual div{left:24px;bottom:24px;right:24px}
+  .guide-wrap{grid-template-columns:1fr;gap:20px;padding-top:20px}
+  .toc{position:static;display:flex;flex-wrap:wrap;gap:4px;padding:12px}
+  .toc .who{width:100%;border:0;padding:0 8px 6px;margin:0}
+  .toc .out{width:100%;margin-top:6px;padding-top:8px}
+  .toc a{padding:6px 10px;font-size:.8rem}
+  .content section{padding:24px 20px}
+  .g-quick,.g-imgrow,.g-imgrow-4,.g-shops,.g-cards{grid-template-columns:1fr 1fr}
+  .g-cols{grid-template-columns:1fr}
+  .g-cols figure{max-width:320px}
+  .g-table th{width:120px;font-size:1rem}
+}
+@media(max-width:560px){
+  .nav-long{display:none}
+  .nav-short{display:inline}
+  .g-quick,.g-shops,.g-cards{grid-template-columns:1fr}
+  .g-table,.g-table tr,.g-table th,.g-table td{display:block;width:auto}
+  .g-table th{padding-bottom:0}
+  .g-table td{padding-top:4px}
+  .content h2{font-size:1.8rem}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="container nav-inner">
+    <a href="index.html" class="brand">Villa <span>Margarita</span></a>
+    <div class="nav-right">
+      <a href="index.html">← <span class="nav-long">Back to the website</span><span class="nav-short">Website</span></a>
+      <span id="navWho" style="display:none;color:var(--muted)"></span>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== LOGIN ===================== -->
+<div class="login" id="loginView">
+  <div class="login-visual">
+    <div>
+      <h1>Welcome to<br>Villa Margarita</h1>
+      <p>Your private guest guide: how to get here, keys and Wi-Fi, the gate and alarm codes, how the villa and the pool alarm work, and our favourite walks, beaches and restaurants along the coast.</p>
+    </div>
+  </div>
+  <div class="login-form">
+    <form class="card" id="loginForm" autocomplete="on">
+      <div class="section-label">Guest area</div>
+      <h2>Sign in</h2>
+      <p class="lead">Use the e-mail address of your booking and your reservation number.</p>
+      <label class="f">E-mail address
+        <input type="email" name="email" id="email" required autocomplete="email" placeholder="you@example.com">
+      </label>
+      <label class="f">Reservation number
+        <input type="password" name="resno" id="resno" required autocomplete="current-password" placeholder="e.g. HMABC12345">
+      </label>
+      <button class="btn btn-gold" type="submit" id="loginBtn">Open the guest guide</button>
+      <div class="err" id="err"></div>
+      <p class="hint">Your reservation number is in your Airbnb or VRBO confirmation, or in the e-mail we sent you. Trouble signing in? Write to <a href="mailto:villa.margarita.beaulieu@gmail.com?Subject=Guest%20area%20access">villa.margarita.beaulieu@gmail.com</a>.</p>
+    </form>
+  </div>
+</div>
+
+<!-- ===================== GUIDE ===================== -->
+<div class="guide" id="guideView">
+  <div class="container guide-wrap">
+    <aside class="toc" id="toc"></aside>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox"><img id="lbImg" src="" alt=""></div>
+
+<footer>
+  <div class="container">© <span id="year"></span> Villa Margarita, Beaulieu-sur-Mer · <a href="index.html">chaletfortuna.github.io/Margarita</a></div>
+</footer>
+
+<script>
+/* The guide is stored encrypted (AES-256-GCM) in guide/content.enc.json.
+   Each guest's e-mail + reservation number derives a key (PBKDF2) that
+   unwraps the content key stored in guide/guests.json.  Nothing readable
+   is served until a valid pair is entered. */
+const enc = new TextEncoder(), dec = new TextDecoder();
+const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+const normalise = (email, resno) => `${email.trim().toLowerCase()}\n${resno.trim().toUpperCase()}`;
+
+async function lookupId(email, resno){
+  return hex(await crypto.subtle.digest('SHA-256', enc.encode('margarita-guest:' + normalise(email, resno))));
+}
+async function deriveKey(email, resno, salt, iter){
+  const base = await crypto.subtle.importKey('raw', enc.encode(normalise(email, resno)), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', salt, iterations:iter, hash:'SHA-256'}, base,
+    {name:'AES-GCM', length:256}, false, ['decrypt']);
+}
+async function unwrap(email, resno){
+  const data = await (await fetch('guide/guests.json', {cache:'no-store'})).json();
+  const e = data.guests[await lookupId(email, resno)];
+  if(!e) throw new Error('nomatch');
+  const k = await deriveKey(email, resno, b64d(e.s), data.iter);
+  let plain;
+  try{ plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64d(e.iv)}, k, b64d(e.w)); }
+  catch{ throw new Error('nomatch'); }
+  return JSON.parse(dec.decode(plain));   // {k: content key (b64), name}
+}
+async function decryptGuide(keyB64){
+  const c = await (await fetch('guide/content.enc.json', {cache:'no-store'})).json();
+  const key = await crypto.subtle.importKey('raw', b64d(keyB64), 'AES-GCM', false, ['decrypt']);
+  return dec.decode(await crypto.subtle.decrypt({name:'AES-GCM', iv:b64d(c.iv)}, key, b64d(c.ct)));
+}
+
+/* ---------- UI ---------- */
+const $ = id => document.getElementById(id);
+$('year').textContent = new Date().getFullYear();
+
+function showError(msg){ const e=$('err'); e.textContent=msg; e.classList.add('show'); }
+
+$('loginForm').addEventListener('submit', async ev => {
+  ev.preventDefault();
+  $('err').classList.remove('show');
+  const btn=$('loginBtn'); btn.disabled=true; btn.innerHTML='<span class="spin"></span>Checking…';
+  try{
+    if(!window.isSecureContext || !crypto.subtle) throw new Error('insecure');
+    const session = await unwrap($('email').value, $('resno').value);
+    const html = await decryptGuide(session.k);
+    try{ sessionStorage.setItem('cf_guest', JSON.stringify(session)); }catch{}
+    openGuide(html, session.name);
+  }catch(e){
+    if(e.message==='nomatch') showError('We could not find a booking with this e-mail and reservation number. Please check both and try again.');
+    else if(e.message==='insecure') showError('This page must be opened over https:// to unlock the guide.');
+    else showError('Something went wrong while loading the guide. Please try again or contact us.');
+  }finally{ btn.disabled=false; btn.textContent='Open the guest guide'; }
+});
+
+function openGuide(html, name){
+  const content=$('content'); content.innerHTML=html;
+  /* table of contents from the sections */
+  const secs=[...content.querySelectorAll('section[data-title]')];
+  $('toc').innerHTML =
+    `<div class="who"><b>${name ? 'Welcome, '+escapeHtml(name) : 'Welcome'}</b>Guest guide · Villa Margarita</div>` +
+    secs.map(s=>`<a href="#${s.id}" data-sec="${s.id}"><span class="ico">${s.dataset.icon||'•'}</span>${s.dataset.title}</a>`).join('') +
+    `<div class="out"><button class="btn btn-ghost btn-sm" id="logout">Sign out</button></div>`;
+  $('logout').onclick=()=>{ try{sessionStorage.removeItem('cf_guest');}catch{} location.hash=''; location.reload(); };
+  /* lightbox on figures */
+  content.querySelectorAll('figure img').forEach(img=>{ img.style.cursor='zoom-in'; img.onclick=()=>{ $('lbImg').src=img.src; $('lightbox').classList.add('open'); }; });
+  /* share form → e-mail */
+  const f=content.querySelector('#shareForm');
+  if(f) f.onsubmit=e=>{
+    e.preventDefault();
+    const fd=new FormData(f);
+    const body=[['Favourite restaurants','restaurants'],['Après-ski or bars','bars'],['Activities','activities'],['Other advice','other']]
+      .map(([l,k])=>`${l}:\n${fd.get(k)||'-'}`).join('\n\n');
+    location.href='mailto:villa.margarita.beaulieu@gmail.com?subject='+encodeURIComponent('Recommendations from a Villa Margarita guest')+'&body='+encodeURIComponent(body);
+  };
+  /* highlight the current chapter while scrolling */
+  const links=[...$('toc').querySelectorAll('a[data-sec]')];
+  const io=new IntersectionObserver(es=>{
+    es.forEach(en=>{ if(en.isIntersecting) links.forEach(a=>a.classList.toggle('active',a.dataset.sec===en.target.id)); });
+  },{rootMargin:'-20% 0px -70% 0px'});
+  secs.forEach(s=>io.observe(s));
+  $('navWho').style.display=''; $('navWho').textContent=name?name:'Guest';
+  $('loginView').style.display='none'; $('guideView').classList.add('open');
+  if(location.hash && content.querySelector(location.hash)) content.querySelector(location.hash).scrollIntoView();
+  else window.scrollTo(0,0);
+}
+function escapeHtml(s){ return s.replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+$('lightbox').onclick=()=>$('lightbox').classList.remove('open');
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') $('lightbox').classList.remove('open'); });
+
+/* restore the session after a refresh (cleared when the tab closes) */
+(async()=>{
+  try{
+    const s=JSON.parse(sessionStorage.getItem('cf_guest')||'null');
+    if(s && s.k) openGuide(await decryptGuide(s.k), s.name);
+  }catch{ try{sessionStorage.removeItem('cf_guest');}catch{} }
+})();
+</script>
+</body>
+</html>
