@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Villa Margarita - Appliance Manuals</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .category {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .category h2 {
+            color: #667eea;
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .manual-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        
+        .manual-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .manual-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .manual-card:hover .manual-title,
+        .manual-card:hover .manual-appliance,
+        .manual-card:hover .manual-lang {
+            color: white;
+        }
+        
+        .manual-card a {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .pdf-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+        
+        .manual-title {
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+        
+        .manual-appliance {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+        
+        .manual-lang {
+            font-size: 11px;
+            color: #999;
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+            transition: color 0.3s ease;
+        }
+        
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #856404;
+        }
+        
+        .note strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+            margin-top: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .manual-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            .category h2 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📖 Appliance Manuals</h1>
+            <p class="subtitle">Find English & French manuals for all appliances at Villa Margarita</p>
+        </header>
+        
+        <!-- KITCHEN -->
+        <div class="category">
+            <h2>🍳 Kitchen</h2>
+            <div class="manual-grid">
+                <!-- Dishwasher -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1AyywZDOnGwL0trnO39ElgjoZB3YrWQ_4/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">📋</div>
+                        <div class="manual-title">Dishwasher</div>
+                        <div class="manual-appliance">Bosch SMI46AW01E</div>
+                        <div class="manual-lang">English Companion</div>
+                    </a>
+                </div>
+                
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1xFB7uM3S4KqyR-BiYTKAj1MtLxvQJN81/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">📋</div>
+                        <div class="manual-title">Dishwasher</div>
+                        <div class="manual-appliance">Bosch SMI46AW01E</div>
+                        <div class="manual-lang">French Manual</div>
+                    </a>
+                </div>
+                
+                <!-- Refrigerator -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1xrLtlwxScAEidT1_ilbTYzzY15waMJyk/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">❄️</div>
+                        <div class="manual-title">Fridge-Freezer</div>
+                        <div class="manual-appliance">Liebherr ICS/ICP LC</div>
+                        <div class="manual-lang">English Companion</div>
+                    </a>
+                </div>
+                
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1yhPzyHlHpU-XTfdFWpoxALGwoitGlEio/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">❄️</div>
+                        <div class="manual-title">Fridge-Freezer</div>
+                        <div class="manual-appliance">Liebherr ICS/ICP LC</div>
+                        <div class="manual-lang">French Manual</div>
+                    </a>
+                </div>
+                
+                <!-- Cooktop -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1A-_XfR2Vat4sTN3jCdAzr2i7E977ogVp/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">🔥</div>
+                        <div class="manual-title">Induction Cooktop</div>
+                        <div class="manual-appliance">Neff T6...X4..</div>
+                        <div class="manual-lang">English</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- LAUNDRY -->
+        <div class="category">
+            <h2>🧊 Laundry</h2>
+            <div class="manual-grid">
+                <!-- Washing Machine -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/15zl6D7-6jw8Wv5loJGelDHpfXGrmdGPa/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">🧺</div>
+                        <div class="manual-title">Washing Machine</div>
+                        <div class="manual-appliance">Siemens WM..N...</div>
+                        <div class="manual-lang">French Manual</div>
+                    </a>
+                </div>
+                
+                <!-- Tumble Dryer English -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1750aafBSFmVLdemkzAGzma4fvF-mNuMV/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">🌀</div>
+                        <div class="manual-title">Tumble Dryer</div>
+                        <div class="manual-appliance">Electrolux EDP2074PDW</div>
+                        <div class="manual-lang">English Companion</div>
+                    </a>
+                </div>
+                
+                <!-- Tumble Dryer French -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1Jx9VHoIp68q-9_FNBfQA4l7NFuG51Mpq/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">🌀</div>
+                        <div class="manual-title">Tumble Dryer</div>
+                        <div class="manual-appliance">Electrolux EDP2074PDW</div>
+                        <div class="manual-lang">French Manual</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CLIMATE CONTROL -->
+        <div class="category">
+            <h2>❄️ Climate Control</h2>
+            <div class="manual-grid">
+                <!-- Lower Bedroom AC -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1iRPN-5-mdlDKOP_CSNz37np5n_4iPGMO/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">❄️</div>
+                        <div class="manual-title">Air Conditioner</div>
+                        <div class="manual-appliance">Daikin (Lower Bedroom)</div>
+                        <div class="manual-lang">English</div>
+                    </a>
+                </div>
+                
+                <!-- Living Room AC -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1OZmHCDrbUBPks4cYi0DLBBktnlWh_dW5/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">❄️</div>
+                        <div class="manual-title">Air Conditioner</div>
+                        <div class="manual-appliance">Daikin (Living Room)</div>
+                        <div class="manual-lang">English</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SECURITY & SYSTEMS -->
+        <div class="category">
+            <h2>🔔 Security & Systems</h2>
+            <div class="manual-grid">
+                <!-- Video Entry -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1qOuwbum5z9MPDzMDZ3WfAZ7rNgRK9Pkf/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">📹</div>
+                        <div class="manual-title">Video Entry System</div>
+                        <div class="manual-appliance">Urmet 1723 Intercom</div>
+                        <div class="manual-lang">Multilingual</div>
+                    </a>
+                </div>
+                
+                <!-- Alarm System -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/1594shrPd1FBI7r9dk4OqQUeASwpMTVtP/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">🚨</div>
+                        <div class="manual-title">Alarm System</div>
+                        <div class="manual-appliance">Digiplex Paradox DGP2-641</div>
+                        <div class="manual-lang">French Manual</div>
+                    </a>
+                </div>
+                
+                <!-- Pool Alarm -->
+                <div class="manual-card">
+                    <a href="https://drive.google.com/file/d/17xJwhBrN9s24vZbAGaHrEDbLUQQLItqf/view?usp=drivesdk" target="_blank">
+                        <div class="pdf-icon">🏊</div>
+                        <div class="manual-title">Pool Alarm</div>
+                        <div class="manual-appliance">AQUALARM™</div>
+                        <div class="manual-lang">French Manual</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="note">
+            <strong>💡 Tip:</strong> All manuals open in Google Drive. For best viewing, download the PDF to your device. If you have any questions about operating an appliance, please contact us and we'll be happy to help.
+        </div>
+        
+        <footer>
+            <p>Villa Margarita, Beaulieu-sur-Mer 🌊</p>
+        </footer>
+    </div>
+</body>
+</html>
