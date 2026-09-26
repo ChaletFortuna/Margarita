@@ -428,7 +428,7 @@ footer a{color:#f0e6d8}
 
 <div class="err" id="err"></div>
 
-<p class="hint">Your reservation number is in your Airbnb or VRBO confirmation, or in the e-mail we sent you. The guide opens 30 days before your arrival. Trouble signing in? Write to <a href="mailto:villa.margarita.beaulieu@gmail.com?Subject=Guest%20area%20access">villa.margarita.beaulieu@gmail.com</a>.</p>
+<p class="hint">Your reservation number is in your Airbnb or VRBO confirmation, or in the e-mail we sent you. The guide opens 30 days before your arrival. We record the date and time of each sign-in. Trouble signing in? Write to <a href="mailto:villa.margarita.beaulieu@gmail.com?Subject=Guest%20area%20access">villa.margarita.beaulieu@gmail.com</a>.</p>
 
 </form>
 
@@ -523,6 +523,20 @@ return dec.decode(await crypto.subtle.decrypt({name:'AES-GCM', iv:b64d(c.iv)}, k
 
 }
 
+/* ---------- sign-in log ----------
+   On each successful sign-in, the date/time, the name typed and the guest's name are
+   added to the "GUEST AREA LOGINS" Google Sheet (via its Apps Script web app).
+   Reservation numbers are never sent. Leave LOG_URL empty to switch logging off. */
+const LOG_URL = '';
+function logSignIn(typed, guest){
+  if(!LOG_URL) return;
+  try{
+    fetch(LOG_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'},
+      body: JSON.stringify({property:'Villa Margarita', login:typed.trim(), name:guest||'',
+        device: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'phone/tablet' : 'computer'})});
+  }catch{}
+}
+
 /* ---------- UI ---------- */
 
 const $ = id => document.getElementById(id);
@@ -544,6 +558,7 @@ try{
 if(!window.isSecureContext || !crypto.subtle) throw new Error('insecure');
 
 const session = await unwrap($('email').value, $('resno').value);
+    logSignIn($('email').value, session.name);
 
 const html = await decryptGuide(session.k);
 
