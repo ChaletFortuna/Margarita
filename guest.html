@@ -12,7 +12,7 @@
 
 <title>Guest area — Villa Margarita, Beaulieu-sur-Mer</title>
 
-<meta name="description" content="Welcome guide for guests of Villa Margarita, Beaulieu-sur-Mer. Log in with your e-mail and reservation number.">
+<meta name="description" content="Welcome guide for guests of Villa Margarita, Beaulieu-sur-Mer. Log in with your family name and reservation number.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -410,11 +410,11 @@ footer a{color:#f0e6d8}
 
 <h2>Sign in</h2>
 
-<p class="lead">Use the e-mail address of your booking and your reservation number.</p>
+<p class="lead">Use the family name of your booking and your reservation number.</p>
 
-<label class="f">E-mail address
+<label class="f">Family name
 
-<input type="email" name="email" id="email" required autocomplete="email" placeholder="you@example.com">
+<input type="text" name="name" id="email" required autocomplete="family-name" autocapitalize="words" spellcheck="false" placeholder="e.g. Smith">
 
 </label>
 
@@ -428,7 +428,7 @@ footer a{color:#f0e6d8}
 
 <div class="err" id="err"></div>
 
-<p class="hint">Your reservation number is in your Airbnb or VRBO confirmation, or in the e-mail we sent you. Trouble signing in? Write to <a href="mailto:villa.margarita.beaulieu@gmail.com?Subject=Guest%20area%20access">villa.margarita.beaulieu@gmail.com</a>.</p>
+<p class="hint">Your reservation number is in your Airbnb or VRBO confirmation, or in the e-mail we sent you. The guide opens 30 days before your arrival. Trouble signing in? Write to <a href="mailto:villa.margarita.beaulieu@gmail.com?Subject=Guest%20area%20access">villa.margarita.beaulieu@gmail.com</a>.</p>
 
 </form>
 
@@ -462,7 +462,7 @@ footer a{color:#f0e6d8}
 
 /* The guide is stored encrypted (AES-256-GCM) in guide/content.enc.json.
 
-Each guest's e-mail + reservation number derives a key (PBKDF2) that
+Each guest's family name + reservation number derives a key (PBKDF2) that
 
 unwraps the content key stored in guide/guests.json. Nothing readable
 
@@ -474,11 +474,12 @@ const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 
 const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
 
-const normalise = (email, resno) => `${email.trim().toLowerCase()}\n${resno.trim().toUpperCase()}`;
+const normName = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const normalise = (name, resno) => `${normName(name)}\n${resno.replace(/\s/g,'').toUpperCase()}`;
 
 async function lookupId(email, resno){
 
-return hex(await crypto.subtle.digest('SHA-256', enc.encode('margarita-guest:' + normalise(email, resno))));
+return hex(await crypto.subtle.digest('SHA-256', enc.encode('margarita-guest-v2:' + normalise(email, resno))));
 
 }
 
@@ -552,7 +553,7 @@ openGuide(html, session.name);
 
 }catch(e){
 
-if(e.message==='nomatch') showError('We could not find a booking with this e-mail and reservation number. Please check both and try again.');
+if(e.message==='nomatch') showError('We could not find a booking with this family name and reservation number. Please check both and try again. The guide opens 30 days before arrival and closes the day after departure.');
 
 else if(e.message==='insecure') showError('This page must be opened over https:// to unlock the guide.');
 

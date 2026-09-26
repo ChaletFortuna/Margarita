@@ -2,25 +2,34 @@
 """
 Build the password-protected guest area of the Villa Margarita website.
 
-Reads (private, git-ignored):
-  guide-src/content.html   the guest guide (HTML sections)
-  guide-src/guests.csv     one guest per line:  email,reservation_number[,name]
+Guests sign in with their FAMILY NAME (login) and RESERVATION NUMBER (password).
 
-Writes (public, committed):
-  guide/content.enc.json   the guide, AES-256-GCM encrypted with a random content key
-  guide/guests.json        the content key wrapped once per guest, with a key derived
-                           from  email + reservation number  (PBKDF2-HMAC-SHA256)
+Private inputs (never committed):
+  guide-src/content.html   the readable guest guide (only needed to re-encrypt the guide)
+  guide-src/content.key    the content key (base64), kept stable between builds
+  MARGARITA GUEST ACCESS.csv the access list kept on Google Drive ("Margarita website" folder):
+        login,password,access_from,access_until,arrival,departure,guest,platform,bookings_row,status
+        login = family name, password = reservation number,
+        access_from / access_until = YYYY-MM-DD (inclusive, Beaulieu local date)
 
-Nothing readable is published: without a valid email + reservation number the
-browser cannot decrypt the guide.  Run again whenever content.html or guests.csv
-changes, then commit guide/*.json.
+Public outputs (committed):
+  guide/content.enc.json   the guide, AES-256-GCM encrypted with the content key
+  guide/guests.json        the content key wrapped once per guest whose access window
+                           is open today, under a key derived (PBKDF2-HMAC-SHA256)
+                           from family name + reservation number
+
+A guest outside their window (or with status "cancelled") is simply not in guests.json,
+so the site refuses the login. Rebuild daily to open and close windows.
 
 Usage:
-  python3 scripts/build_guide.py                       # rebuild everything
-  python3 scripts/build_guide.py --add EMAIL RESNO [NAME]   # add a guest and rebuild
-  python3 scripts/build_guide.py --check EMAIL RESNO   # verify a login offline
+  python3 scripts/build_guide.py --guests ACCESS.csv                 # rebuild guests.json only
+  python3 scripts/build_guide.py --guests ACCESS.csv --content      # also re-encrypt content.html
+  python3 scripts/build_guide.py --check "Family name" RESNO         # verify a login offline
+Options:
+  --key FILE     content key file (default guide-src/content.key)
+  --today DATE   pretend today is DATE (YYYY-MM-DD), for testing
 """
-import base64, csv, hashlib, json, os, secrets, sys
+import argparse, base64, csv, datetime, hashlib, json, re, secrets, sys, unicodedata
 from pathlib import Path
 
 try:
@@ -30,105 +39,147 @@ except ImportError:
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC_HTML = ROOT / "guide-src" / "content.html"
-SRC_GUESTS = ROOT / "guide-src" / "guests.csv"
+DEFAULT_KEY = ROOT / "guide-src" / "content.key"
 OUT_DIR = ROOT / "guide"
 OUT_CONTENT = OUT_DIR / "content.enc.json"
 OUT_GUESTS = OUT_DIR / "guests.json"
-KEY_FILE = ROOT / "guide-src" / "content.key"   # keeps the content key stable between builds
 
 PBKDF2_ITER = 300_000
+VERSION = 2
 
 
 def b64(b: bytes) -> str:
     return base64.b64encode(b).decode()
 
 
-def normalise(email: str, resno: str) -> bytes:
-    """Same normalisation as guest.html: e-mail lower-case, reservation upper-case."""
-    return f"{email.strip().lower()}\n{resno.strip().upper()}".encode()
+def norm_name(s: str) -> str:
+    """Same as guest.html: accents dropped, lower-case, letters and digits only.
+    'Pierer-von Esch', 'pierer von esch' and 'PIERERVONESCH' all match."""
+    s = unicodedata.normalize("NFD", s)
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")
+    return re.sub(r"[^a-z0-9]", "", s.lower())
 
 
-def lookup_id(email: str, resno: str) -> str:
-    return hashlib.sha256(b"margarita-guest:" + normalise(email, resno)).hexdigest()
+def norm_resno(s: str) -> str:
+    return re.sub(r"\s", "", s).upper()
 
 
-def derive(email: str, resno: str, salt: bytes) -> bytes:
-    return hashlib.pbkdf2_hmac("sha256", normalise(email, resno), salt, PBKDF2_ITER, 32)
+def secret(name: str, resno: str) -> bytes:
+    return f"{norm_name(name)}\n{norm_resno(resno)}".encode()
 
 
-def load_content_key() -> bytes:
-    if KEY_FILE.exists():
-        return base64.b64decode(KEY_FILE.read_text().strip())
-    key = secrets.token_bytes(32)
-    KEY_FILE.write_text(b64(key))
-    return key
+def lookup_id(name: str, resno: str) -> str:
+    return hashlib.sha256(b"margarita-guest-v2:" + secret(name, resno)).hexdigest()
 
 
-def read_guests():
-    guests = []
-    if SRC_GUESTS.exists():
-        with SRC_GUESTS.open(newline="", encoding="utf-8") as f:
-            for row in csv.reader(f):
-                if not row or row[0].strip().startswith("#"):
-                    continue
-                email, resno = row[0], row[1]
-                name = row[2].strip() if len(row) > 2 else ""
-                guests.append((email.strip(), resno.strip(), name))
-    return guests
+def derive(name: str, resno: str, salt: bytes) -> bytes:
+    return hashlib.pbkdf2_hmac("sha256", secret(name, resno), salt, PBKDF2_ITER, 32)
 
 
-def build():
+def local_today() -> datetime.date:
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.datetime.now(ZoneInfo("Europe/Paris")).date()
+    except Exception:
+        return datetime.date.today()
+
+
+def load_key(path: Path) -> bytes:
+    if path.exists():
+        return base64.b64decode(path.read_text().strip())
+    sys.exit(f"Content key not found: {path}  (the key is on Google Drive, 'Margarita website' folder)")
+
+
+def read_access(path: Path, today: datetime.date):
+    """Return (open_guests, report_lines)."""
+    open_guests, report = [], []
+    with path.open(newline="", encoding="utf-8-sig") as f:
+        for row in csv.DictReader(f):
+            row = {(k or "").strip().lower(): (v or "").strip() for k, v in row.items()}
+            login, pw = row.get("login", ""), row.get("password", "")
+            if not login or not pw:
+                continue
+            status = row.get("status", "").lower()
+            try:
+                start = datetime.date.fromisoformat(row.get("access_from", ""))
+                end = datetime.date.fromisoformat(row.get("access_until", ""))
+            except ValueError:
+                report.append(f"  skipped   {login}: bad access dates"); continue
+            if "cancel" in status:
+                state = "cancelled"
+            elif today < start:
+                state = f"opens {start}"
+            elif today > end:
+                state = "expired"
+            else:
+                state = "OPEN"
+                open_guests.append((login, pw, row.get("guest", "") or login))
+            report.append(f"  {state:<16} {login}")
+    return open_guests, report
+
+
+def fingerprint(guests) -> str:
+    """Stable digest of who is open (changes when a login opens, closes or is renamed)."""
+    lines = sorted(f"{lookup_id(n, r)}|{d}" for n, r, d in guests)
+    return hashlib.sha256("\n".join(lines).encode()).hexdigest()
+
+
+def write_guests(key: bytes, guests) -> bool:
+    """Rewrite guests.json only when the set of open logins changed. Returns True if written."""
+    fp = fingerprint(guests)
+    try:
+        if json.loads(OUT_GUESTS.read_text()).get("fp") == fp:
+            return False
+    except (OSError, ValueError):
+        pass
+    entries = {}
+    for name, resno, display in guests:
+        salt, iv = secrets.token_bytes(16), secrets.token_bytes(12)
+        payload = json.dumps({"k": b64(key), "name": display}).encode()
+        entries[lookup_id(name, resno)] = {
+            "s": b64(salt), "iv": b64(iv),
+            "w": b64(AESGCM(derive(name, resno, salt)).encrypt(iv, payload, None))}
     OUT_DIR.mkdir(exist_ok=True)
-    key = load_content_key()
-    aes = AESGCM(key)
+    OUT_GUESTS.write_text(json.dumps({"v": VERSION, "iter": PBKDF2_ITER, "fp": fp, "guests": entries}, indent=1))
+    return True
 
-    # 1. encrypt the guide
+
+def write_content(key: bytes):
     html = SRC_HTML.read_text(encoding="utf-8")
     iv = secrets.token_bytes(12)
-    OUT_CONTENT.write_text(json.dumps({
-        "v": 1, "alg": "AES-256-GCM",
-        "iv": b64(iv), "ct": b64(aes.encrypt(iv, html.encode("utf-8"), None)),
-    }))
-
-    # 2. wrap the content key once per guest
-    entries = {}
-    for email, resno, name in read_guests():
-        salt = secrets.token_bytes(16)
-        wrap_iv = secrets.token_bytes(12)
-        payload = json.dumps({"k": b64(key), "name": name}).encode()
-        wrapped = AESGCM(derive(email, resno, salt)).encrypt(wrap_iv, payload, None)
-        entries[lookup_id(email, resno)] = {"s": b64(salt), "iv": b64(wrap_iv), "w": b64(wrapped)}
-    OUT_GUESTS.write_text(json.dumps({"v": 1, "iter": PBKDF2_ITER, "guests": entries}, indent=1))
-    print(f"Encrypted guide: {OUT_CONTENT.relative_to(ROOT)} ({OUT_CONTENT.stat().st_size // 1024} KB)")
-    print(f"Guest logins:    {OUT_GUESTS.relative_to(ROOT)} ({len(entries)} guest(s))")
+    OUT_CONTENT.write_text(json.dumps({"v": 1, "alg": "AES-256-GCM", "iv": b64(iv),
+                                       "ct": b64(AESGCM(key).encrypt(iv, html.encode(), None))}))
 
 
-def add_guest(email, resno, name=""):
-    existing = read_guests()
-    if any(e.lower() == email.lower() and r.upper() == resno.upper() for e, r, _ in existing):
-        print("Guest already present.")
-    else:
-        with SRC_GUESTS.open("a", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerow([email, resno, name])
-        print(f"Added {email} / {resno}")
-    build()
-
-
-def check(email, resno):
+def check(name, resno):
     data = json.loads(OUT_GUESTS.read_text())
-    e = data["guests"].get(lookup_id(email, resno))
+    e = data["guests"].get(lookup_id(name, resno))
     if not e:
-        print("NOT FOUND"); return
-    key = AESGCM(derive(email, resno, base64.b64decode(e["s"]))).decrypt(
+        print("NOT FOUND (wrong login, or access window closed)"); return False
+    p = AESGCM(derive(name, resno, base64.b64decode(e["s"]))).decrypt(
         base64.b64decode(e["iv"]), base64.b64decode(e["w"]), None)
-    print("OK, unwrapped:", json.loads(key).get("name") or "(no name)")
+    print("OK:", json.loads(p).get("name")); return True
 
 
 if __name__ == "__main__":
-    a = sys.argv[1:]
-    if a[:1] == ["--add"] and len(a) >= 3:
-        add_guest(a[1], a[2], a[3] if len(a) > 3 else "")
-    elif a[:1] == ["--check"] and len(a) == 3:
-        check(a[1], a[2])
-    else:
-        build()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--guests", type=Path)
+    ap.add_argument("--content", action="store_true")
+    ap.add_argument("--key", type=Path, default=DEFAULT_KEY)
+    ap.add_argument("--today")
+    ap.add_argument("--check", nargs=2, metavar=("NAME", "RESNO"))
+    a = ap.parse_args()
+    if a.check:
+        sys.exit(0 if check(*a.check) else 1)
+    if not a.guests:
+        ap.error("--guests ACCESS.csv is required")
+    key = load_key(a.key)
+    today = datetime.date.fromisoformat(a.today) if a.today else local_today()
+    guests, report = read_access(a.guests, today)
+    changed = write_guests(key, guests)
+    if a.content:
+        write_content(key)
+        print("Re-encrypted guide/content.enc.json")
+    print(f"Access list for {today}:")
+    print("\n".join(report))
+    print(f"guide/guests.json: {len(guests)} open login(s) — {'UPDATED' if changed else 'no change'}")

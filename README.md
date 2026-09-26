@@ -28,24 +28,39 @@ Live at https://chaletfortuna.github.io/Margarita/ once GitHub Pages is enabled.
 
 ## Guest area
 
-Guests open `guest.html` and sign in with **their booking e-mail address** and **their
-reservation number**. The guide is never served in readable form: it is encrypted with
-AES-256-GCM, and each guest's e-mail + reservation number derives (PBKDF2, 300 000 iterations)
-the key that unwraps the decryption key. A visitor without a valid pair only downloads ciphertext.
+Guests open `guest.html` and sign in with **their family name** and **their reservation
+number** (case, accents, spaces and hyphens in the name are ignored). The guide is encrypted
+(AES-256-GCM); each guest's name + reservation number derives (PBKDF2, 300 000 iterations)
+the key that unwraps the decryption key, so visitors without a valid pair only get ciphertext.
 
-### Add a guest
+### Who can log in: the access file on Google Drive
 
-```bash
-pip install cryptography                       # once
-python3 scripts/build_guide.py --add guest@example.com HMABC12345 "Smith family"
+**MARGARITA GUEST ACCESS.csv**, "Margarita website" folder of the chalet.fortuna.zermatt@gmail.com
+Drive (never in this repo):
+
+```
+login,password,access_from,access_until,arrival,departure,guest,platform,bookings_row,status
+smith,HMABC12345,2026-11-02,2026-12-10,2026-12-02,2026-12-09,John Smith,Airbnb,,scheduled
 ```
 
-Then upload the two files in `guide/` to GitHub (they overwrite the old ones). The guest can
-sign in a minute later. To remove a guest, delete their line from `guide-src/guests.csv` and run
-`python3 scripts/build_guide.py`. Check a login offline with
-`python3 scripts/build_guide.py --check EMAIL RESNO`.
+Only guests whose `access_from`–`access_until` window includes today (Beaulieu date) are
+written to `guide/guests.json`; a `status` containing "cancel" is always left out. The Claude
+scheduled task "Margarita guest access – daily" reads the Drive file every night, rebuilds
+`guide/guests.json` and pushes it when the open logins changed.
 
-Test login: `oesnou@gmail.com` / `Margarita1`.
+Rebuild by hand (content key: "MARGARITA GUIDE KEY - PRIVATE.txt" in the same Drive folder):
+
+```bash
+pip install cryptography
+python3 scripts/build_guide.py --guests "MARGARITA GUEST ACCESS.csv" --key content.key
+python3 scripts/build_guide.py --check "Smith" HMABC12345
+git add guide/guests.json && git commit -m "Update guest access" && git push
+```
+
+To edit the guide: change `guide-src/content.html`, then add `--content` to the build command.
+`guide-src/` is git-ignored — never commit it, the access file or the key.
+
+Test login (in the access file): `esnou` / `MARGARITA1`.
 
 ### Edit the guide
 
