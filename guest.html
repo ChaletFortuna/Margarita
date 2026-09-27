@@ -529,7 +529,7 @@ return dec.decode(await crypto.subtle.decrypt({name:'AES-GCM', iv:b64d(c.iv)}, k
    On each successful sign-in, the date/time, the name typed and the guest's name are
    added to the "GUEST AREA LOGINS" Google Sheet (via its Apps Script web app).
    Reservation numbers are never sent. Leave LOG_URL empty to switch logging off. */
-const LOG_URL = '';
+const LOG_URL = 'https://script.google.com/macros/s/AKfycbxkaMgt0Ie0SJk98qss2CkqSdy15bQ-uQZtoM9MMerfZ23zBxd_tsLPZsASJcJ0XJVNIw/exec';
 function logSignIn(typed, guest){
   try{ if(window.goatcounter && window.goatcounter.count) window.goatcounter.count({path:'guest-sign-in-margarita', title:'Guest sign-in (Margarita)', event:true}); }catch{}
   if(!LOG_URL) return;
