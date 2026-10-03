@@ -25,6 +25,10 @@ a{color:var(--sea)}
 .container{max-width:1140px;margin:0 auto;padding:0 28px}
 section{padding:88px 0}
 h2{font-size:clamp(2rem,4vw,2.9rem);margin-bottom:26px;max-width:18ch}
+.video-frame{position:relative;aspect-ratio:16/9;width:100%;max-width:960px;border-radius:8px;overflow:hidden;background:#0f3a57;box-shadow:0 10px 30px rgba(15,58,87,.15)}
+.video-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.video-link{margin-top:12px;font-size:.88rem;color:var(--muted)}
+.video-link a{color:inherit}
 h2 em{font-style:italic;font-weight:500}
 p{max-width:62ch}
 
@@ -182,6 +186,7 @@ footer small{color:#8fa9bd;display:block;border-top:1px solid rgba(255,255,255,.
     <ul class="nav-links" id="navLinks">
       <li><a href="#about" data-i18n="nav_about">The villa</a></li>
       <li><a href="#gallery" data-i18n="nav_gallery">Photos</a></li>
+      <li><a href="#video" data-i18n="nav_video">Video</a></li>
       <li><a href="#amenities" data-i18n="nav_amenities">Amenities</a></li>
       <li><a href="#booking" data-i18n="nav_booking">Availability</a></li>
       <li><a href="#location" data-i18n="nav_location">Location</a></li>
@@ -255,6 +260,14 @@ footer small{color:#8fa9bd;display:block;border-top:1px solid rgba(255,255,255,.
       <a href="images/exterior.jpg"><img src="images/exterior.jpg" alt="Villa exterior and garden" loading="lazy"></a>
       <a href="images/garden-gate.jpg"><img src="images/garden-gate.jpg" alt="Entrance gate and flowering shrubs" loading="lazy"></a>
     </div>
+  </div>
+</section>
+
+<section id="video" class="video">
+  <div class="container">
+    <h2 data-i18n="vid_title">A short film of the villa</h2>
+    <div class="video-frame"><iframe src="https://drive.google.com/file/d/1wUSsdQPEAEthxRqkrhaFKLwV6766Lxb6/preview" title="Villa Margarita — welcome video" allow="autoplay; fullscreen" allowfullscreen loading="lazy"></iframe></div>
+    <p class="video-link"><span data-i18n="vid_fallback">Video not playing?</span> <a href="https://drive.google.com/file/d/1wUSsdQPEAEthxRqkrhaFKLwV6766Lxb6/view" target="_blank" rel="noopener" data-i18n="vid_open">Open it in Google Drive</a></p>
   </div>
 </section>
 
@@ -362,7 +375,7 @@ footer small{color:#8fa9bd;display:block;border-top:1px solid rgba(255,255,255,.
 /* ===================== I18N ===================== */
 const i18n = {
 en:{
-  nav_about:"The villa",nav_gallery:"Photos",nav_amenities:"Amenities",nav_booking:"Availability",nav_location:"Location",nav_contact:"Contact",nav_guest:"Guest area",
+  nav_about:"The villa",nav_gallery:"Photos",nav_video:"Video",nav_amenities:"Amenities",nav_booking:"Availability",nav_location:"Location",nav_contact:"Contact",nav_guest:"Guest area",
   badge_superhost:"Superhost, 15 years",badge_fav:"Guest Favourite",
   hero_title:"A villa <em>above the bay,</em> a short walk from the sea",
   hero_tag:"Villa Margarita sits on a quiet lane above Beaulieu-sur-Mer, looking out over the bay to Cap Ferrat. Four bedrooms, a heated pool, a terraced garden — and the beach 200 metres below.",
@@ -373,6 +386,7 @@ en:{
   about_p2:"The villa has four bedrooms and three bathrooms: three bedrooms with sea views, plus a fourth with its own shower room that works well for children. Inside, Riviera style meets contemporary comfort — a fully equipped open kitchen, a large sitting room opening onto the terrace, air conditioning in every room, and a video-monitored alarm.",
   about_p3:"Outside, a terraced Mediterranean garden with a flat lawn, mature trees and flowering shrubs, a heated pool long enough for laps, and a shaded dining terrace for the long evenings. The beach is 200 metres away and the shops and restaurants of Beaulieu a ten-minute walk — with a lift as an alternative to the steep street.",
   gal_title:"The villa in pictures",
+  vid_title:"A short film of the villa",vid_fallback:"Video not playing?",vid_open:"Open it in Google Drive",
   amen_title:"What the villa offers",
   amen_note:"The villa is strictly non-smoking, inside and in the garden. One dog or cat under 25 kg is welcome. No parties or events.",
   amen_groups:[
@@ -403,7 +417,7 @@ en:{
   days:["Mo","Tu","We","Th","Fr","Sa","Su"]
 },
 fr:{
-  nav_about:"La villa",nav_gallery:"Photos",nav_amenities:"Équipements",nav_booking:"Disponibilités",nav_location:"Situation",nav_contact:"Contact",nav_guest:"Espace voyageurs",
+  nav_about:"La villa",nav_gallery:"Photos",nav_video:"Vidéo",nav_amenities:"Équipements",nav_booking:"Disponibilités",nav_location:"Situation",nav_contact:"Contact",nav_guest:"Espace voyageurs",
   badge_superhost:"Superhôte depuis 15 ans",badge_fav:"Coup de cœur voyageurs",
   hero_title:"Une villa <em>au-dessus de la baie,</em> à deux pas de la mer",
   hero_tag:"La Villa Margarita se trouve sur un chemin tranquille au-dessus de Beaulieu-sur-Mer, face à la baie et au Cap Ferrat. Quatre chambres, une piscine chauffée, un jardin en terrasses — et la plage à 200 mètres.",
@@ -414,6 +428,7 @@ fr:{
   about_p2:"La villa compte quatre chambres et trois salles de bain : trois chambres avec vue mer, et une quatrième avec sa propre salle de douche, idéale pour les enfants. À l'intérieur, le style Riviera rencontre le confort contemporain — cuisine ouverte entièrement équipée, grand salon ouvrant sur la terrasse, climatisation dans toutes les pièces, alarme avec vidéosurveillance.",
   about_p3:"À l'extérieur, un jardin méditerranéen en terrasses avec une pelouse plane, des arbres centenaires et des arbustes en fleurs, une piscine chauffée assez longue pour nager, et une terrasse de repas ombragée pour les longues soirées. La plage est à 200 mètres, les commerces et restaurants de Beaulieu à dix minutes à pied — avec un ascenseur en alternative à la rue en pente.",
   gal_title:"La villa en images",
+  vid_title:"La villa en vidéo",vid_fallback:"La vidéo ne se lance pas ?",vid_open:"Ouvrez-la dans Google Drive",
   amen_title:"Ce que la villa vous offre",
   amen_note:"La villa est strictement non-fumeur, à l'intérieur comme au jardin. Un chien ou un chat de moins de 25 kg est le bienvenu. Pas de fêtes ni d'événements.",
   amen_groups:[
@@ -444,7 +459,7 @@ fr:{
   days:["Lu","Ma","Me","Je","Ve","Sa","Di"]
 },
 de:{
-  nav_about:"Die Villa",nav_gallery:"Fotos",nav_amenities:"Ausstattung",nav_booking:"Verfügbarkeit",nav_location:"Lage",nav_contact:"Kontakt",nav_guest:"Gästebereich",
+  nav_about:"Die Villa",nav_gallery:"Fotos",nav_video:"Video",nav_amenities:"Ausstattung",nav_booking:"Verfügbarkeit",nav_location:"Lage",nav_contact:"Kontakt",nav_guest:"Gästebereich",
   badge_superhost:"Superhost seit 15 Jahren",badge_fav:"Gästeliebling",
   hero_title:"Eine Villa <em>über der Bucht,</em> wenige Schritte vom Meer",
   hero_tag:"Die Villa Margarita liegt an einer ruhigen Strasse oberhalb von Beaulieu-sur-Mer, mit Blick über die Bucht zum Cap Ferrat. Vier Schlafzimmer, ein beheizter Pool, ein terrassierter Garten — und der Strand 200 Meter unterhalb.",
@@ -455,6 +470,7 @@ de:{
   about_p2:"Die Villa hat vier Schlafzimmer und drei Badezimmer: drei Schlafzimmer mit Meerblick und ein viertes mit eigener Dusche, das sich gut für Kinder eignet. Innen trifft Riviera-Stil auf zeitgemässen Komfort — eine voll ausgestattete offene Küche, ein grosses Wohnzimmer zur Terrasse, Klimaanlage in jedem Raum und eine videoüberwachte Alarmanlage.",
   about_p3:"Draussen ein terrassierter mediterraner Garten mit ebener Rasenfläche, alten Bäumen und blühenden Sträuchern, ein beheizter Pool, lang genug zum Bahnenschwimmen, und eine schattige Essterrasse für die langen Abende. Der Strand ist 200 Meter entfernt, die Geschäfte und Restaurants von Beaulieu zehn Gehminuten — mit einem Lift als Alternative zur steilen Strasse.",
   gal_title:"Die Villa in Bildern",
+  vid_title:"Die Villa im Video",vid_fallback:"Video startet nicht?",vid_open:"In Google Drive öffnen",
   amen_title:"Was die Villa bietet",
   amen_note:"In der Villa und im Garten gilt striktes Rauchverbot. Ein Hund oder eine Katze unter 25 kg ist willkommen. Keine Partys oder Veranstaltungen.",
   amen_groups:[
@@ -486,7 +502,8 @@ de:{
 }
 };
 
-let lang = localStorage.getItem('vm_lang') || (navigator.language||'en').slice(0,2);
+/* ?lang=fr / ?lang=de in the address wins, then the visitor's last choice, then the browser language */
+let lang = (new URLSearchParams(location.search).get('lang')||'').toLowerCase() || localStorage.getItem('vm_lang') || (navigator.language||'en').slice(0,2);
 if(!i18n[lang]) lang='en';
 
 function applyLang(l){
